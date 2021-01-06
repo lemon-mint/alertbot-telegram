@@ -71,7 +71,11 @@ func main() {
 		bytes.NewReader(data),
 	)
 	ioutil.ReadAll(resp.Body)
-	e.Logger.Fatal(e.StartAutoTLS(":13230"))
+	if os.Getenv("IS_HEROKU") == "true" {
+		e.Logger.Fatal(e.Start(":" + os.Getenv("PORT")))
+	} else {
+		e.Logger.Fatal(e.StartAutoTLS(":13230"))
+	}
 }
 
 type webhookEventRequest struct {
