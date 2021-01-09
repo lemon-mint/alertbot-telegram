@@ -9,4 +9,4 @@ EXPOSE 16745
 FROM alpine:latest
 COPY --from=build /app /app
 WORKDIR /app
-ENTRYPOINT ["/app/main"]
+CMD /app/main
