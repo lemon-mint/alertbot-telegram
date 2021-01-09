@@ -38,6 +38,18 @@ func main() {
 	e.AutoTLSManager.Cache = autocert.DirCache(".cache")
 	e.AutoTLSManager.HostPolicy = autocert.HostWhitelist(os.Getenv("PUBLIC_HOSTNAME"))
 	e.Use(middleware.Recover())
+	e.GET("/push/:chatid", func(c echo.Context) error {
+		if c.Request().URL.Query().Get("pin") == os.Getenv("ADMIN_MSG_SEND_PIN") &&
+			len(os.Getenv("ADMIN_MSG_SEND_PIN")) >= 16 {
+			chatid, err := strconv.Atoi(c.Param("chatid"))
+			if err != nil {
+				return c.String(403, "Permission denied")
+			}
+			sendPlainMessage(chatid, c.Request().URL.Query().Get("msg"), 0, 0)
+			c.String(200, "OK :"+c.Request().URL.Query().Get("msg"))
+		}
+		return c.String(403, "Permission denied")
+	})
 	e.POST("/api/webhook/:hookid", webhook)
 	http.Get(apiBaseURL + "/setWebhook?url=" + url.QueryEscape(os.Getenv("PUBLIC_URL")+"/api/webhook/telegram"))
 	data, _ := json.Marshal(struct {
