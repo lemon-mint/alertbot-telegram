@@ -1,6 +1,6 @@
 module github.com/lemon-mint/alertbot-telegram
 // +heroku goVersion go1.15
-go 1.15
+go 1.18
 
 require (
 	github.com/labstack/echo/v4 v4.1.17
